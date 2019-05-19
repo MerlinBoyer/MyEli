@@ -76,15 +76,15 @@ static osjob_t sendjob;
 
 // Schedule TX every this many seconds (might become longer due to duty
 // cycle limitations).
-const unsigned TX_INTERVAL = 60;
+const unsigned TX_INTERVAL = 20;
 
 // Pin mapping
 // Adapted for Feather M0 per p.10 of [feather]
 const lmic_pinmap lmic_pins = {
-    .nss = 10,                       // chip select on feather (rf95module) CS
+    .nss = (uint8_t) 10,                       // chip select on feather (rf95module) CS
     .rxtx = LMIC_UNUSED_PIN,
-    .rst = 9,                       // reset pin
-    .dio = {23, 24, LMIC_UNUSED_PIN}, // assumes external jumpers [feather_lora_jumper]
+    .rst = (uint8_t) '\009',                       // reset pin
+    .dio = {A0, A1, LMIC_UNUSED_PIN}, // assumes external jumpers [feather_lora_jumper]
                                     // DIO1 is on JP1-1: is io1 - we connect to GPO6
                                     // DIO1 is on JP5-3: is D2 - we connect to GPO5
 };
@@ -186,7 +186,7 @@ void onEvent (ev_t ev) {
 void setup() {
 //    pinMode(13, OUTPUT); 
     while (!Serial); // wait for Serial to be initialized
-    Serial.begin(115200);
+    Serial.begin(9600);
     delay(100);     // per sample code on RF_95 test
     Serial.println(F("Starting"));
 
