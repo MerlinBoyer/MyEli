@@ -80,10 +80,12 @@ const unsigned TX_INTERVAL = 20;
 
 // Pin mapping
 // Adapted for Feather M0 per p.10 of [feather]
+#define PIN_RFM_RST   (9)
+static const uint8_t RFM_rst   = PIN_RFM_RST;
 const lmic_pinmap lmic_pins = {
-    .nss = (uint8_t) 10,                       // chip select on feather (rf95module) CS
+    .nss = SS,                       // chip select on feather (rf95module) CS
     .rxtx = LMIC_UNUSED_PIN,
-    .rst = (uint8_t) '\009',                       // reset pin
+    .rst = RFM_rst,                       // reset pin
     .dio = {A0, A1, LMIC_UNUSED_PIN}, // assumes external jumpers [feather_lora_jumper]
                                     // DIO1 is on JP1-1: is io1 - we connect to GPO6
                                     // DIO1 is on JP5-3: is D2 - we connect to GPO5

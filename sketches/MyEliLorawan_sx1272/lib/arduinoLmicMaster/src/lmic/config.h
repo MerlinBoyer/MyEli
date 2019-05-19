@@ -47,7 +47,7 @@
 //#define CFG_sx1272_radio 1
 // This is the SX1276/SX1277/SX1278/SX1279 radio, which is also used on
 // the HopeRF RFM95 boards.
-//#define CFG_sx1276_radio 1
+// #define CFG_sx1276_radio 1
 
 // ensure that a radio is defined.
 #if ! (defined(CFG_sx1272_radio) || defined(CFG_sx1276_radio))
@@ -90,7 +90,7 @@
 // Enable this to allow using printf() to print to the given serial port
 // (or any other Print object). This can be easy for debugging. The
 // current implementation only works on AVR, though.
-//#define LMIC_PRINTF_TO Serial
+#define LMIC_PRINTF_TO Serial
 
 // Enable this to use interrupt handler routines listening for RISING signals.
 // Otherwise, the library polls digital input lines for changes.
