@@ -66,12 +66,12 @@ void os_getDevEui (u1_t* buf) { memcpy_P(buf, DEVEUI, 8);}
 static const u1_t PROGMEM APPKEY[16] = { 0x40, 0x7D, 0x19, 0xEE, 0xCC, 0x0E, 0x12, 0x98, 0xF4, 0x14, 0x3D, 0x7F, 0x34, 0x58, 0xD8, 0x6C };
 void os_getDevKey (u1_t* buf) {  memcpy_P(buf, APPKEY, 16);}
 
-static uint8_t mydata[] = "Hello, world!";
+static uint8_t mydata[] = "{latitude: 44.806752,\nlongitude: -0.605135}";
 static osjob_t sendjob;
 
 // Schedule TX every this many seconds (might become longer due to duty
 // cycle limitations).
-const unsigned TX_INTERVAL = 60;
+const unsigned TX_INTERVAL = 6000;
 
 // Pin mapping
 #define PIN_RFM_RST   (9)
