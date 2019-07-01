@@ -1,6 +1,6 @@
 {
     "terminal.integrated.env.linux": {
-        "PATH": "/home/serge/.platformio/penv/bin:/home/serge/.platformio/penv:/home/serge/bin:/home/serge/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+        "PATH": "/home/serge/.platformio/penv/bin:/home/serge/.platformio/penv:/home/serge/bin:/home/serge/.local/bin:/home/serge/bin:/home/serge/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
         "PLATFORMIO_CALLER": "vscode"
     }
 }

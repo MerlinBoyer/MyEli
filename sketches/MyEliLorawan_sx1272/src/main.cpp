@@ -49,6 +49,11 @@
 # define FILLMEIN (#dont edit this, edit the lines that use FILLMEIN)
 #endif
 
+
+/*
+* SX params
+*/
+
 // This EUI must be in little-endian format, so least-significant-byte
 // first. When copying an EUI from ttnctl output, this means to reverse
 // the bytes. For TTN issued EUIs the last bytes should be 0xD5, 0xB3,
@@ -66,16 +71,19 @@ void os_getDevEui (u1_t* buf) { memcpy_P(buf, DEVEUI, 8);}
 static const u1_t PROGMEM APPKEY[16] = { 0x40, 0x7D, 0x19, 0xEE, 0xCC, 0x0E, 0x12, 0x98, 0xF4, 0x14, 0x3D, 0x7F, 0x34, 0x58, 0xD8, 0x6C };
 void os_getDevKey (u1_t* buf) {  memcpy_P(buf, APPKEY, 16);}
 
-static uint8_t mydata[] = "{latitude: 44.806752,\nlongitude: -0.605135}";
-static osjob_t sendjob;
 
-// Schedule TX every this many seconds (might become longer due to duty
-// cycle limitations).
-const unsigned TX_INTERVAL = 6000;
 
-// Pin mapping
+
+
+/*
+* Pin mapping
+*/
 #define PIN_RFM_RST   (9)
+#define PIN_ALARM     (8)
+#define PIN_BUZZER    (7)
 static const uint8_t RFM_rst   = PIN_RFM_RST;
+
+
 const lmic_pinmap lmic_pins = {
     .nss = SS,                       // chip select on feather (rf95module) CS
     .rxtx = LMIC_UNUSED_PIN,
@@ -84,6 +92,21 @@ const lmic_pinmap lmic_pins = {
                                     // DIO1 is on JP1-1: is io1 - we connect to GPO6
                                     // DIO1 is on JP5-3: is D2 - we connect to GPO5
 };
+
+
+
+
+/*
+* Schedule TX every this many seconds (might become longer due to duty cycle limitations).
+*/
+const unsigned TX_INTERVAL = 6000;
+static uint8_t mydata[] = "{latitude: 44.806752,\nlongitude: -0.605135}";
+static osjob_t sendjob;
+
+int alarm_trigerred = false;
+int alarm_status = 0;
+int ring_alarm = 0;
+int buzzerpin_state = 0;
 
 void do_send(osjob_t* j){
     // Check if there is not a current TX/RX job running
@@ -95,6 +118,13 @@ void do_send(osjob_t* j){
         Serial.println(F("Packet queued"));
     }
     // Next TX is scheduled after TX_COMPLETE event.
+}
+
+
+void alarm_func(){
+    Serial.println("Alarm !");
+    ring_alarm = 1;
+    do_send(&sendjob);
 }
 
 
@@ -217,17 +247,38 @@ void setup() {
     digitalWrite(VCC_ENABLE, HIGH);
     delay(1000);
     #endif
+    pinMode(PIN_ALARM, INPUT);
+    pinMode(PIN_BUZZER, OUTPUT);
 
     // LMIC init
     os_init();
     // Reset the MAC state. Session and pending data transfers will be discarded.
     LMIC_reset();
-    
 
     // Start job (sending automatically starts OTAA too)
-    do_send(&sendjob);
+    // do_send(&sendjob);
 }
 
 void loop() {
+
+    alarm_status = digitalRead(PIN_ALARM);
+    
+    if( alarm_status == 1 && !alarm_trigerred ) {
+        alarm_trigerred = true;
+        alarm_func();
+    }
+    if( alarm_status == 0 ){
+        alarm_trigerred = 0;  // reset alarm on button relax
+        ring_alarm = 0;       // silence pls
+    }
+
+    if(ring_alarm){
+        for(int i=0; i<80; i++){
+            buzzerpin_state = !buzzerpin_state;
+            digitalWrite(PIN_BUZZER, buzzerpin_state);
+            delay(1);
+        }
+    }
+
     os_runloop_once();
 }
