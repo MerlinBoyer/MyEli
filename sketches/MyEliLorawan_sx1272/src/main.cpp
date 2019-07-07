@@ -124,6 +124,7 @@ void do_send(osjob_t* j){
 void alarm_func(){
     Serial.println("Alarm !");
     ring_alarm = 1;
+    LMIC_reset();
     do_send(&sendjob);
 }
 
@@ -241,12 +242,6 @@ void setup() {
     Serial.begin(9600);
     Serial.println(F("Starting"));
 
-    #ifdef VCC_ENABLE
-    // For Pinoccio Scout boards
-    pinMode(VCC_ENABLE, OUTPUT);
-    digitalWrite(VCC_ENABLE, HIGH);
-    delay(1000);
-    #endif
     pinMode(PIN_ALARM, INPUT);
     pinMode(PIN_BUZZER, OUTPUT);
 
@@ -281,4 +276,5 @@ void loop() {
     }
 
     os_runloop_once();
+    delay(1);
 }
